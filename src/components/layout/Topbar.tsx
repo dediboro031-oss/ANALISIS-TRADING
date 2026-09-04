@@ -36,7 +36,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onOpenAuthModa
     markNotificationAsRead, 
     markAllNotificationsAsRead,
     openQuickTrade,
-    activeTab
+    activeTab,
+    setActiveTab
   } = useTrading();
 
   const [notifOpen, setNotifOpen] = useState(false);
@@ -93,14 +94,25 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onOpenAuthModa
 
         {/* Live Market Quote Pill matching design HTML */}
         <div className="hidden xl:flex items-center gap-2">
-          {quotes.slice(0, 2).map(q => {
+          <button
+            onClick={() => setActiveTab('market')}
+            className="px-2.5 py-1 bg-[#1A1A1A] border border-[#333] hover:border-[#F2C94C] rounded text-[11px] font-bold text-[#F2C94C] flex items-center gap-1.5 transition-colors"
+            title="Buka Watchlist Pasar Hari Ini"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span>WATCHLIST HARI INI</span>
+          </button>
+
+          {quotes.slice(0, 3).map(q => {
             const isPositive = q.change24h >= 0;
             return (
               <div
                 key={q.symbol}
-                onClick={() => openQuickTrade({ pair: q.symbol, type: isPositive ? 'BUY' : 'SELL', price: q.bid })}
+                onClick={() => {
+                  setActiveTab('market');
+                }}
                 className="px-3 py-1 bg-[#1A1A1A] border border-[#333] rounded flex items-center gap-2 text-xs text-white cursor-pointer hover:border-[#F2C94C]/60 transition-colors"
-                title={`Order ${q.symbol}`}
+                title={`Lihat Watchlist & Order ${q.symbol}`}
               >
                 <span className={`w-2 h-2 rounded-full ${isPositive ? 'bg-green-500' : 'bg-red-500'}`} />
                 <span className="font-bold">{q.symbol}:</span>

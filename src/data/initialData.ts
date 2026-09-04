@@ -95,6 +95,45 @@ export const INITIAL_MARKET_QUOTES: MarketQuote[] = [
     sparkline: [1.3695, 1.3705, 1.3715, 1.3708, 1.3710, 1.3718, 1.3712]
   },
   {
+    symbol: 'USD/CHF',
+    name: 'US Dollar vs Swiss Franc',
+    category: 'FOREX_MAJOR',
+    bid: 0.89740,
+    ask: 0.89756,
+    spread: 1.6,
+    change24h: -0.24,
+    high24h: 0.90120,
+    low24h: 0.89550,
+    pipPrecision: 5,
+    sparkline: [0.8990, 0.8985, 0.8980, 0.8972, 0.8978, 0.8971, 0.8974]
+  },
+  {
+    symbol: 'NZD/USD',
+    name: 'New Zealand vs US Dollar',
+    category: 'FOREX_MAJOR',
+    bid: 0.61240,
+    ask: 0.61258,
+    spread: 1.8,
+    change24h: 0.45,
+    high24h: 0.61480,
+    low24h: 0.60920,
+    pipPrecision: 5,
+    sparkline: [0.6095, 0.6105, 0.6112, 0.6118, 0.6125, 0.6120, 0.6124]
+  },
+  {
+    symbol: 'USOIL',
+    name: 'Crude Oil WTI (Minyak Mentah)',
+    category: 'COMMODITIES',
+    bid: 78.42,
+    ask: 78.46,
+    spread: 0.04,
+    change24h: 1.85,
+    high24h: 79.20,
+    low24h: 77.10,
+    pipPrecision: 2,
+    sparkline: [77.2, 77.5, 77.8, 78.1, 78.0, 78.3, 78.42]
+  },
+  {
     symbol: 'BTC/USD',
     name: 'Bitcoin vs US Dollar',
     category: 'CRYPTO',
@@ -106,6 +145,19 @@ export const INITIAL_MARKET_QUOTES: MarketQuote[] = [
     low24h: 62900.00,
     pipPrecision: 2,
     sparkline: [63100, 63450, 63900, 64200, 64100, 64600, 64850]
+  },
+  {
+    symbol: 'ETH/USD',
+    name: 'Ethereum vs US Dollar',
+    category: 'CRYPTO',
+    bid: 3480.20,
+    ask: 3482.50,
+    spread: 2.30,
+    change24h: 2.14,
+    high24h: 3520.00,
+    low24h: 3390.00,
+    pipPrecision: 2,
+    sparkline: [3410, 3425, 3450, 3465, 3470, 3475, 3480.2]
   }
 ];
 

@@ -55,7 +55,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'market',
       label: 'Pasar & Watchlist',
-      icon: <BarChart3 className="w-4 h-4" />
+      icon: <BarChart3 className="w-4 h-4" />,
+      badge: 'Live'
     },
     {
       id: 'analytics',
