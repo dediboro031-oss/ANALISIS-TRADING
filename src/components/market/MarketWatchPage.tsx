@@ -28,13 +28,17 @@ import {
   Globe,
   SlidersHorizontal,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  Coins
 } from 'lucide-react';
+import { XauUsdTodayChart } from './XauUsdTodayChart';
+import { XauUsdTodayPriceCard } from './XauUsdTodayPriceCard';
 
 export const MarketWatchPage: React.FC = () => {
   const { quotes, openQuickTrade } = useTrading();
 
   const [selectedPair, setSelectedPair] = useState<string>('XAU/USD');
+  const [xauViewMode, setXauViewMode] = useState<'price' | 'chart'>('price');
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('H1');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -108,152 +112,189 @@ export const MarketWatchPage: React.FC = () => {
       {/* Main Terminal View: Left Chart + Right Instrument Watchlist */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Chart Terminal (8 cols) */}
-        <div className="lg:col-span-8 bg-[#1A1A1A] border border-[#333] rounded-lg p-4 sm:p-5 flex flex-col justify-between">
-          <div>
-            {/* Header of the instrument */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#333]">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded bg-[#0D0D0D] border border-[#333] flex items-center justify-center font-bold text-base text-[#F2C94C] font-mono">
-                  {currentQuote.symbol.split('/')[0]}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg sm:text-xl font-bold text-white">{currentQuote.symbol}</h2>
-                    <span className={`flex items-center text-xs font-mono font-bold px-1.5 py-0.5 rounded ${
-                      isPositive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
-                    }`}>
-                      {isPositive ? <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" /> : <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />}
-                      {isPositive ? '+' : ''}{currentQuote.change24h}%
-                    </span>
-                    <span className="text-[10px] font-mono text-[#F2C94C] bg-[#F2C94C]/10 px-1.5 py-0.5 rounded font-bold">
-                      Spread {currentQuote.spread}p
-                    </span>
+        <div className="lg:col-span-8">
+          {selectedPair === 'XAU/USD' ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setXauViewMode('price')}
+                  className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                    xauViewMode === 'price'
+                      ? 'bg-[#F2C94C] text-[#000]'
+                      : 'bg-[#141414] border border-[#333] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Coins className="w-3.5 h-3.5" />
+                  <span>HARGA HARI INI & KONVERSI RUPIAH</span>
+                </button>
+                <button
+                  onClick={() => setXauViewMode('chart')}
+                  className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                    xauViewMode === 'chart'
+                      ? 'bg-[#F2C94C] text-[#000]'
+                      : 'bg-[#141414] border border-[#333] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <Flame className="w-3.5 h-3.5" />
+                  <span>CHART CANDLESTICK & TEKNIKAL</span>
+                </button>
+              </div>
+
+              {xauViewMode === 'price' ? (
+                <XauUsdTodayPriceCard />
+              ) : (
+                <XauUsdTodayChart />
+              )}
+            </div>
+          ) : (
+            <div className="bg-[#1A1A1A] border border-[#333] rounded-lg p-4 sm:p-5 flex flex-col justify-between h-full">
+              <div>
+                {/* Header of the instrument */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#333]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded bg-[#0D0D0D] border border-[#333] flex items-center justify-center font-bold text-base text-[#F2C94C] font-mono">
+                      {currentQuote.symbol.split('/')[0]}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-lg sm:text-xl font-bold text-white">{currentQuote.symbol}</h2>
+                        <span className={`flex items-center text-xs font-mono font-bold px-1.5 py-0.5 rounded ${
+                          isPositive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+                        }`}>
+                          {isPositive ? <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" /> : <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />}
+                          {isPositive ? '+' : ''}{currentQuote.change24h}%
+                        </span>
+                        <span className="text-[10px] font-mono text-[#F2C94C] bg-[#F2C94C]/10 px-1.5 py-0.5 rounded font-bold">
+                          Spread {currentQuote.spread}p
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-400">{currentQuote.name}</div>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-400">{currentQuote.name}</div>
+
+                  {/* Timeframe switchers */}
+                  <div className="flex items-center bg-[#0D0D0D] border border-[#333] rounded p-0.5 text-xs font-mono">
+                    {['M5', 'M15', 'M30', 'H1', 'H4', 'D1'].map(tf => (
+                      <button
+                        key={tf}
+                        onClick={() => setSelectedTimeframe(tf)}
+                        className={`px-2.5 py-1 rounded transition-colors ${
+                          selectedTimeframe === tf
+                            ? 'bg-[#F2C94C] text-[#000] font-bold'
+                            : 'text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        {tf}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price statistics bar with High/Low Range */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4 p-3 rounded bg-[#0D0D0D] border border-[#333] text-xs font-mono">
+                  <div>
+                    <span className="text-[10px] text-gray-500 block font-sans">Bid (Jual Saat Ini):</span>
+                    <span className="text-sm sm:text-base font-bold text-white">{currentQuote.bid}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-gray-500 block font-sans">Ask (Beli Saat Ini):</span>
+                    <span className="text-sm sm:text-base font-bold text-white">{currentQuote.ask}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-green-500 block font-sans">Tertinggi Hari Ini (High):</span>
+                    <span className="text-xs font-semibold text-green-400">{currentQuote.high24h}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-red-500 block font-sans">Terendah Hari Ini (Low):</span>
+                    <span className="text-xs font-semibold text-red-400">{currentQuote.low24h}</span>
+                  </div>
+                </div>
+
+                {/* Daily Position Meter */}
+                <div className="mb-3 px-3 py-2 bg-[#141414] rounded border border-[#2A2A2A] text-xs font-mono">
+                  <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
+                    <span>Rentang Pergerakan Hari Ini (Range: {dailyRange})</span>
+                    <span className="text-[#F2C94C]">Posisi: {positionPercent.toFixed(0)}% dari rentang terendah</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#0D0D0D] rounded border border-[#333] overflow-hidden relative">
+                    <div 
+                      className="h-full bg-gradient-to-r from-red-500 via-[#F2C94C] to-green-500 rounded transition-all duration-300"
+                      style={{ width: `${positionPercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Price Chart */}
+                <div className="h-72 w-full mt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="quoteGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={isPositive ? '#22C55E' : '#F2C94C'} stopOpacity={0.3} />
+                          <stop offset="95%" stopColor={isPositive ? '#22C55E' : '#F2C94C'} stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
+                      <XAxis dataKey="time" stroke="#666" fontSize={11} tickLine={false} />
+                      <YAxis 
+                        stroke="#666" 
+                        fontSize={11} 
+                        tickLine={false}
+                        domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                      />
+                      <Tooltip
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-[#1A1A1A] border border-[#333] p-2.5 rounded shadow-xl text-xs font-mono">
+                                <div className="font-bold text-white">{label} WIB</div>
+                                <div className="text-[#F2C94C] font-bold mt-0.5">
+                                  Harga: {payload[0].value}
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="price"
+                        stroke={isPositive ? '#22C55E' : '#F2C94C'}
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#quoteGrad)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Timeframe switchers */}
-              <div className="flex items-center bg-[#0D0D0D] border border-[#333] rounded p-0.5 text-xs font-mono">
-                {['M5', 'M15', 'M30', 'H1', 'H4', 'D1'].map(tf => (
+              {/* Quick One-Click Order Footer */}
+              <div className="mt-4 pt-4 border-t border-[#333] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-xs text-gray-400 flex items-center gap-2">
+                  <span>Spread Exness:</span>
+                  <span className="font-bold text-[#F2C94C] font-mono">{currentQuote.spread} Pips</span>
+                  <span>•</span>
+                  <span className="text-gray-500">Eksekusi Instan No Requote</span>
+                </div>
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
                   <button
-                    key={tf}
-                    onClick={() => setSelectedTimeframe(tf)}
-                    className={`px-2.5 py-1 rounded transition-colors ${
-                      selectedTimeframe === tf
-                        ? 'bg-[#F2C94C] text-[#000] font-bold'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
+                    onClick={() => openQuickTrade({ pair: currentQuote.symbol, type: 'SELL', price: currentQuote.bid })}
+                    className="flex-1 sm:flex-none px-5 py-2 rounded bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all shadow-sm text-center"
                   >
-                    {tf}
+                    SELL @ {currentQuote.bid}
                   </button>
-                ))}
+                  <button
+                    onClick={() => openQuickTrade({ pair: currentQuote.symbol, type: 'BUY', price: currentQuote.ask })}
+                    className="flex-1 sm:flex-none px-5 py-2 rounded bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-all shadow-sm text-center"
+                  >
+                    BUY @ {currentQuote.ask}
+                  </button>
+                </div>
               </div>
             </div>
-
-            {/* Price statistics bar with High/Low Range */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4 p-3 rounded bg-[#0D0D0D] border border-[#333] text-xs font-mono">
-              <div>
-                <span className="text-[10px] text-gray-500 block font-sans">Bid (Jual Saat Ini):</span>
-                <span className="text-sm sm:text-base font-bold text-white">{currentQuote.bid}</span>
-              </div>
-              <div>
-                <span className="text-[10px] text-gray-500 block font-sans">Ask (Beli Saat Ini):</span>
-                <span className="text-sm sm:text-base font-bold text-white">{currentQuote.ask}</span>
-              </div>
-              <div>
-                <span className="text-[10px] text-green-500 block font-sans">Tertinggi Hari Ini (High):</span>
-                <span className="text-xs font-semibold text-green-400">{currentQuote.high24h}</span>
-              </div>
-              <div>
-                <span className="text-[10px] text-red-500 block font-sans">Terendah Hari Ini (Low):</span>
-                <span className="text-xs font-semibold text-red-400">{currentQuote.low24h}</span>
-              </div>
-            </div>
-
-            {/* Daily Position Meter */}
-            <div className="mb-3 px-3 py-2 bg-[#141414] rounded border border-[#2A2A2A] text-xs font-mono">
-              <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
-                <span>Rentang Pergerakan Hari Ini (Range: {dailyRange})</span>
-                <span className="text-[#F2C94C]">Posisi: {positionPercent.toFixed(0)}% dari rentang terendah</span>
-              </div>
-              <div className="w-full h-2 bg-[#0D0D0D] rounded border border-[#333] overflow-hidden relative">
-                <div 
-                  className="h-full bg-gradient-to-r from-red-500 via-[#F2C94C] to-green-500 rounded transition-all duration-300"
-                  style={{ width: `${positionPercent}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Price Chart */}
-            <div className="h-72 w-full mt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="quoteGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={isPositive ? '#22C55E' : '#F2C94C'} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={isPositive ? '#22C55E' : '#F2C94C'} stopOpacity={0.0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
-                  <XAxis dataKey="time" stroke="#666" fontSize={11} tickLine={false} />
-                  <YAxis 
-                    stroke="#666" 
-                    fontSize={11} 
-                    tickLine={false}
-                    domain={['dataMin - 0.5', 'dataMax + 0.5']}
-                  />
-                  <Tooltip
-                    content={({ active, payload, label }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className="bg-[#1A1A1A] border border-[#333] p-2.5 rounded shadow-xl text-xs font-mono">
-                            <div className="font-bold text-white">{label} WIB</div>
-                            <div className="text-[#F2C94C] font-bold mt-0.5">
-                              Harga: {payload[0].value}
-                            </div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="price"
-                    stroke={isPositive ? '#22C55E' : '#F2C94C'}
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#quoteGrad)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Quick One-Click Order Footer */}
-          <div className="mt-4 pt-4 border-t border-[#333] flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-gray-400 flex items-center gap-2">
-              <span>Spread Exness:</span>
-              <span className="font-bold text-[#F2C94C] font-mono">{currentQuote.spread} Pips</span>
-              <span>•</span>
-              <span className="text-gray-500">Eksekusi Instan No Requote</span>
-            </div>
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
-              <button
-                onClick={() => openQuickTrade({ pair: currentQuote.symbol, type: 'SELL', price: currentQuote.bid })}
-                className="flex-1 sm:flex-none px-5 py-2 rounded bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all shadow-sm text-center"
-              >
-                SELL @ {currentQuote.bid}
-              </button>
-              <button
-                onClick={() => openQuickTrade({ pair: currentQuote.symbol, type: 'BUY', price: currentQuote.ask })}
-                className="flex-1 sm:flex-none px-5 py-2 rounded bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-all shadow-sm text-center"
-              >
-                BUY @ {currentQuote.ask}
-              </button>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Watchlist selection sidebar (4 cols) */}
